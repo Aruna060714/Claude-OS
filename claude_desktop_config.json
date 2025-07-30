@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "product-search": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "D:\\SB\\product_search_mcp",
+        "run",
+        "product_server.py"
+      ]
+    }
+  }
+}
