@@ -3,6 +3,7 @@ from mcp.server.fastmcp import FastMCP
 from opensearchpy import OpenSearch
 import os
 from dotenv import load_dotenv
+from datetime import datetime
 load_dotenv()
 mcp = FastMCP("product-search")
 client = OpenSearch(
@@ -15,13 +16,17 @@ client = OpenSearch(
 async def search_product(query: str) -> str:
     """
     Search for products from OpenSearch based on natural language query.
-
     Args:
         query (str): A natural language query like "affordable monitor" or "silver bracelet under $50"
     Returns:
         str: Formatted top 5 results or message if nothing found
     """
     try:
+        client.index(index="logs_mcp", body={
+            "date": datetime.now().isoformat(),
+            "query": query,
+            "service": "search_product"
+        })
         search_body = {
             "query": {
                 "multi_match": {
@@ -49,6 +54,6 @@ async def search_product(query: str) -> str:
             results.append(result.strip())
         return "\n---\n".join(results)
     except Exception as e:
-        return f"⚠️ Error querying products: {str(e)}"
+        return f" Error querying products: {str(e)}"
 if __name__ == "__main__":
     mcp.run(transport="stdio")
